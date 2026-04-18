@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Servo Control Lesson (Challenge)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .section {
+      margin-bottom: 25px;
+    }
+    .highlight {
+      background: #eaf2ff;
+      padding: 12px;
+      border-left: 5px solid #3498db;
+      margin-bottom: 10px;
+    }
+    .box {
+      background: #eef7ff;
+      padding: 10px;
+      border-left: 5px solid #2980b9;
+      margin-bottom: 8px;
+      font-family: monospace;
+    }
+    ul, ol {
+      padding-left: 20px;
+    }
+    .challenge {
+      background: #fff3cd;
+      padding: 15px;
+      border-left: 5px solid #ffc107;
+      font-weight: bold;
+    }
+    .phase {
+      background: #d4edda;
+      padding: 10px;
+      border-left: 5px solid #28a745;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>🤖 Servo Control Lesson (Student Challenge)</h1>
+
+  <!-- PHASE 1 -->
+  <div class="section">
+    <div class="phase">PHASE 1: Think First (No Code)</div>
+
+    <h2>🧠 Goal</h2>
+    <p>
+      Your task is to build a program that controls <strong>two servo motors</strong> using the Serial Monitor.
+    </p>
+    <ul>
+      <li>One servo should move to the angle you type</li>
+      <li>The second servo should move in the <strong>opposite direction</strong></li>
+    </ul>
+
+    <h2>🔧 What You Need to Figure Out</h2>
+
+    <div class="highlight">How do you control a servo motor in Arduino?</div>
+    <div class="highlight">How do you connect (attach) a servo to a pin?</div>
+    <div class="highlight">How do you send and receive data using the Serial Monitor?</div>
+    <div class="highlight">How do you make sure the angle stays between 0 and 180?</div>
+    <div class="highlight">How can you make one servo move in the opposite direction?</div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="section">
+    <div class="phase">PHASE 2: Tools You Can Use</div>
+
+    <h2>🧩 Servo Setup</h2>
+    <div class="box">#include &lt;Servo.h&gt;</div>
+    <div class="box">Servo servo1;</div>
+    <div class="box">Servo servo2;</div>
+
+    <h2>🧩 Setup Commands</h2>
+    <div class="box">Serial.begin(9600);</div>
+    <div class="box">servo1.attach(A1);</div>
+    <div class="box">servo2.attach(A2);</div>
+    <div class="box">servo1.write(90);</div>
+    <div class="box">servo2.write(90);</div>
+
+    <h2>🧩 Reading Input</h2>
+    <div class="box">Serial.available() &gt; 0</div>
+    <div class="box">int angle = Serial.readStringUntil('\n').toInt();</div>
+
+    <h2>🧩 Safety</h2>
+    <div class="box">angle = constrain(angle, 0, 180);</div>
+
+    <h2>🧩 Moving Servos</h2>
+    <div class="box">servo.write(angle);</div>
+
+    <div class="challenge">
+      🚀 Decide:  
+      Which servo follows the input?  
+      Which one should be reversed?
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="section">
+    <div class="phase">PHASE 3: Logic Challenge</div>
+
+    <h2>🎯 Expected Behavior</h2>
+    <ul>
+      <li>Input 0 → Servos: 0° and 180°</li>
+      <li>Input 90 → Servos: 90° and 90°</li>
+      <li>Input 180 → Servos: 180° and 0°</li>
+    </ul>
+
+    <div class="challenge">
+      If input = 30 → output should be 150  
+      If input = 60 → output should be 120  
+    </div>
+
+    <h2>💡 Hint</h2>
+    <p>
+      What number are you subtracting from?
+    </p>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="section">
+    <div class="phase">PHASE 4: Build It</div>
+
+    <h2>🧪 Steps to Try</h2>
+    <ol>
+      <li>Set up two servo motors</li>
+      <li>Open Serial Monitor</li>
+      <li>Send a number (0–180)</li>
+      <li>Make both servos respond correctly</li>
+    </ol>
+
+    <div class="challenge">
+      🚀 Final Challenge:  
+      Build the entire program using ONLY the commands above.
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="section">
+    <div class="phase">PHASE 5: Think Deeper</div>
+
+    <ul>
+      <li>What happens if you remove the mirror logic?</li>
+      <li>How could you control more than two servos?</li>
+      <li>How would you make the movement smoother?</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>
