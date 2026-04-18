@@ -2,286 +2,235 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TUMO LA Robotics Level I Cheat Sheet</title>
-<h1> Arduino MKR IoT Carrier </h1>
-<div style="text-align:center; font-size:12px; margin-bottom:10px;">
-  <b>TUMO LA Robotics Level I Cheatsheet</b><br>
-  Workshop Leader: Arman Manjian
-</div>
+<title>Servo Lesson + Cheat Sheet</title>
+
 <style>
-  @page {
-    size: A4;
-    margin: 10mm;
-  }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+}
 
-  body {
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-    margin: 0;
-    background: #1e1e1e;
-    color: #eaeaea;
-  }
+/* Tabs */
+.tabs {
+  display: flex;
+  background: #2c3e50;
+}
 
-  h1 {
-    text-align: center;
-    font-size: 18px;
-    margin: 5px 0 10px 0;
-    color: #ffffff;
-  }
+.tab {
+  padding: 15px 20px;
+  color: white;
+  cursor: pointer;
+}
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
+.tab.active {
+  background: #3498db;
+}
 
-  .section {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    background: #2a2a2a;
-  }
+/* Content */
+.content {
+  display: none;
+  padding: 20px;
+}
 
-  h2 {
-    font-size: 12px;
-    margin: 0 0 4px 0;
-    color: #ffffff;
-  }
+.content.active {
+  display: block;
+}
 
-  pre {
-    margin: 0;
-    font-size: 10px;
-    background: #121212;
-    padding: 6px;
-    border-radius: 4px;
-    overflow-x: auto;
-  }
+/* Lesson Styles */
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+}
 
-  /* Arduino-like Dark Syntax */
-  .kw { color: #569cd6; }   /* keywords */
-  .fn { color: #dcdcaa; }   /* functions */
-  .var { color: #9cdcfe; }  /* variables */
-  .str { color: #ce9178; }  /* strings */
-  .num { color: #b5cea8; }  /* numbers */
-  .com { color: #6a9955; font-style: italic; } /* comments */
+.section { margin-bottom: 25px; }
 
-  /* Section Colors (subtle dark tones) */
-  .structure { border-left: 4px solid #c084fc; }
-  .output    { border-left: 4px solid #4ade80; }
-  .logic     { border-left: 4px solid #facc15; }
-  .general   { border-left: 4px solid #94a3b8; }
+.highlight {
+  background: #eaf2ff;
+  padding: 12px;
+  border-left: 5px solid #3498db;
+  margin-bottom: 10px;
+}
 
-  .full {
-    grid-column: span 3;
-  }
+.box {
+  background: #eef7ff;
+  padding: 10px;
+  border-left: 5px solid #2980b9;
+  margin-bottom: 8px;
+  font-family: monospace;
+}
 
-  ul {
-    margin: 4px 0 0 15px;
-  }
+.challenge {
+  background: #fff3cd;
+  padding: 15px;
+  border-left: 5px solid #ffc107;
+  font-weight: bold;
+}
+
+.phase {
+  background: #d4edda;
+  padding: 10px;
+  border-left: 5px solid #28a745;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+/* Cheat Sheet Styles */
+.cheat-body {
+  background: #1e1e1e;
+  color: #eaeaea;
+  padding: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.section2 {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+}
+
+pre {
+  font-size: 10px;
+  background: #121212;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+/* Syntax colors */
+.kw { color: #569cd6; }
+.fn { color: #dcdcaa; }
+.var { color: #9cdcfe; }
+.str { color: #ce9178; }
+.num { color: #b5cea8; }
+.com { color: #6a9955; }
+
+.structure { border-left: 4px solid #c084fc; }
+.output { border-left: 4px solid #4ade80; }
+.logic { border-left: 4px solid #facc15; }
+.general { border-left: 4px solid #94a3b8; }
+
+.full { grid-column: span 3; }
+
 </style>
-</head>
 
+<script>
+function showTab(tabIndex) {
+  let tabs = document.querySelectorAll(".content");
+  let buttons = document.querySelectorAll(".tab");
+
+  tabs.forEach(t => t.classList.remove("active"));
+  buttons.forEach(b => b.classList.remove("active"));
+
+  tabs[tabIndex].classList.add("active");
+  buttons[tabIndex].classList.add("active");
+}
+</script>
+
+</head>
 <body>
 
+<!-- TAB BUTTONS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab(0)">🤖 Lesson</div>
+  <div class="tab" onclick="showTab(1)">📘 Cheat Sheet</div>
+</div>
+
+<!-- TAB 1: LESSON -->
+<div class="content active">
+<div class="container">
+
+<h1>🤖 Servo Control Lesson</h1>
+
+<div class="phase">PHASE 1: Think First</div>
+
+<div class="section">
+<ul>
+<li>Control 2 servos</li>
+<li>One follows input</li>
+<li>One moves opposite</li>
+</ul>
+</div>
+
+<div class="section">
+<div class="highlight">How do you control a servo?</div>
+<div class="highlight">How do you read Serial input?</div>
+<div class="highlight">How do you reverse a value?</div>
+</div>
+
+<div class="phase">PHASE 2: Tools</div>
+
+<div class="box">#include &lt;Servo.h&gt;</div>
+<div class="box">Servo servo1;</div>
+<div class="box">Servo servo2;</div>
+<div class="box">Serial.begin(9600);</div>
+<div class="box">servo.attach(A1);</div>
+<div class="box">Serial.available() &gt; 0</div>
+<div class="box">int angle = Serial.readStringUntil('\n').toInt();</div>
+<div class="box">angle = constrain(angle, 0, 180);</div>
+
+<div class="challenge">
+Build the full program using only these commands.
+</div>
+
+<div class="phase">PHASE 3: Smooth Motion</div>
+
+<div class="challenge">
+How can you move from 0 → 180 smoothly instead of jumping?
+</div>
+
+</div>
+</div>
+
+<!-- TAB 2: CHEAT SHEET -->
+<div class="content cheat-body">
+
+<h1 style="text-align:center;">Arduino Cheat Sheet</h1>
 
 <div class="grid">
 
-<!-- STRUCTURE -->
-<div class="section structure">
+<div class="section2 structure">
 <h2>Structure</h2>
 <pre>
-<span class="kw">#include</span> &lt;Arduino_MKRIoTCarrier.h&gt;
-
-MKRIoTCarrier carrier;
-
-<span class="kw">void</span> setup() {
-
-}
-
-<span class="kw">void</span> loop() {
-
-}
+<span class="kw">void</span> setup(){}
+<span class="kw">void</span> loop(){}
 </pre>
 </div>
 
-<!-- VARIABLES -->
-<div class="section general">
+<div class="section2 general">
 <h2>Variables</h2>
 <pre>
 <span class="kw">int</span> x = <span class="num">10</span>;
 <span class="kw">float</span> y = <span class="num">3.14</span>;
-<span class="kw">bool</span> state = <span class="kw">true</span>;
-<span class="kw">String</span> text = <span class="str">"Hello"</span>;
 </pre>
 </div>
 
-<!-- SERIAL -->
-<div class="section general">
-<h2>Serial</h2>
-<pre>
-Serial.begin(<span class="num">9600</span>);
-
-Serial.print(<span class="str">"Value: "</span>);
-Serial.println(x);
-</pre>
-</div>
-
-<!-- OUTPUT -->
-<div class="section output">
-<h2>Outputs</h2>
-<pre>
-pinMode(pin, OUTPUT);
-
-digitalWrite(pin, HIGH);
-digitalWrite(pin, LOW);
-
-analogWrite(pin, <span class="num">128</span>);
-</pre>
-</div>
-
-<!-- SETUP -->
-<div class="section structure">
-<h2>Setup</h2>
-<pre>
-<span class="kw">void</span> setup() {
- Serial.begin(<span class="num">9600</span>);
- carrier.begin();
-
- <span class="com">// Touch button example (case / no case)</span>
- <span class="com">// if(carrier.Buttons.onTouchDown(TOUCH0)){}</span>
-}
-</pre>
-</div>
-
-<!-- LOOP -->
-<div class="section structure">
-<h2>Loop</h2>
-<pre>
-<span class="kw">void</span> loop() {
-
-}
-</pre>
-</div>
-
-<!-- IF -->
-<div class="section logic">
-<h2>If (4 Conditions)</h2>
-<pre>
-<span class="kw">if</span> (x &lt; <span class="num">200</span>) {
-
-}
-<span class="kw">else if</span> (x &lt; <span class="num">400</span>) {
-
-}
-<span class="kw">else if</span> (x &lt; <span class="num">600</span>) {
-
-}
-<span class="kw">else</span> {
-
-}
-</pre>
-</div>
-
-<!-- FOR -->
-<div class="section logic">
+<div class="section2 logic">
 <h2>For Loop</h2>
 <pre>
-<span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;<span class="num">10</span>; i++){
+<span class="kw">for</span>(<span class="kw">int</span> i=0; i&lt;10; i++){
  Serial.println(i);
 }
 </pre>
 </div>
 
-<!-- WHILE -->
-<div class="section logic">
-<h2>While (Sensor Example)</h2>
-<pre>
-<span class="kw">int</span> v = analogRead(A0);
-
-<span class="kw">while</span>(v &lt; <span class="num">300</span>){
-  Serial.println(<span class="str">"Low value"</span>);
-  v = analogRead(A0);
-}
-</pre>
-</div>
-
-<!-- FUNCTIONS -->
-<div class="section general">
-<h2>Functions</h2>
-<pre>
-<span class="kw">void</span> ledOn(<span class="kw">int</span> p){
- digitalWrite(p, HIGH);
-}
-
-ledOn(<span class="num">5</span>);
-</pre>
-</div>
-
-<!-- CARRIER -->
-<div class="section output">
-<h2>MKR Carrier</h2>
-<pre>
-carrier.begin();
-
-carrier.leds.setPixelColor(<span class="num">0</span>, <span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>);
-carrier.leds.show();
-
-carrier.Buzzer.sound(<span class="num">1000</span>);
-carrier.Buzzer.noSound();
-</pre>
-</div>
-
-<!-- SENSORS -->
-<div class="section general">
-<h2>Sensors</h2>
-<pre>
-<span class="kw">float</span> t =
- carrier.Env.readTemperature();
-
-<span class="kw">float</span> h =
- carrier.Env.readHumidity();
-</pre>
-</div>
-
-<!-- FULL EXAMPLE -->
-<div class="section full structure">
-<h2>Full Example</h2>
-<pre>
-#include &lt;Arduino_MKRIoTCarrier.h&gt;
-
-MKRIoTCarrier carrier;
-<span class="kw">int</span> led = <span class="num">5</span>;
-
-<span class="kw">void</span> setup(){
- Serial.begin(<span class="num">9600</span>);
- carrier.begin();
- pinMode(led, OUTPUT);
-}
-
-<span class="kw">void</span> loop(){
- <span class="kw">int</span> v = analogRead(A0);
-
- <span class="kw">if</span>(v &gt; <span class="num">500</span>){
-  digitalWrite(led, HIGH);
- } <span class="kw">else</span> {
-  digitalWrite(led, LOW);
- }
-
- Serial.println(v);
- delay(<span class="num">100</span>);
-}
-</pre>
-</div>
-
-<!-- TIPS -->
-<div class="section full general">
+<div class="section2 full general">
 <h2>Tips</h2>
 <ul>
-<li>Always use <b>carrier.begin()</b></li>
-<li>Use <b>Serial.println()</b> for debugging</li>
-<li>Use functions to organize code</li>
-<li>Avoid long delay()</li>
+<li>Use Serial.println for debugging</li>
+<li>Break code into steps</li>
+<li>Test small parts first</li>
 </ul>
+</div>
+
 </div>
 
 </div>
