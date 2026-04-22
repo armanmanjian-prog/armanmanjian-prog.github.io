@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robotic Arm Control – Guided Learning Path</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    h1, h2, h3, h4 {
+      color: #f8fafc;
+      margin-top: 0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+
+    .section {
+      background: #1e293b;
+      border-left: 6px solid #38bdf8;
+      padding: 24px;
+      margin-bottom: 28px;
+      border-radius: 10px;
+    }
+
+    .section h2 {
+      margin-bottom: 12px;
+      font-size: 26px;
+    }
+
+    .section h3 {
+      margin-top: 24px;
+      font-size: 20px;
+      color: #7dd3fc;
+    }
+
+    .section h4 {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #bae6fd;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    ul, ol {
+      margin: 10px 0 10px 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .question-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 14px;
+    }
+
+    .hint-box {
+      background: #082f49;
+      border: 1px solid #0ea5e9;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 14px;
+    }
+
+    .code-block {
+      background: #020617;
+      color: #cbd5e1;
+      padding: 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-top: 16px;
+      border: 1px solid #334155;
+    }
+
+    code, pre {
+      font-family: Consolas, Monaco, monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #94a3b8;
+      margin-top: 40px;
+      font-size: 15px;
+    }
+
+    .number-title {
+      color: #f8fafc;
+      font-weight: bold;
+      margin-top: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Robotic Arm Control – Guided Learning Path</h1>
+    <p class="subtitle">
+      A student-focused lesson designed to guide discovery, reasoning, and system building in robotics programming
+    </p>
+
+    <div class="section">
+      <h2>0. Review: Dual Servo Joint (From Previous Session)</h2>
+      <p>
+        You already built a system where two servos act as <strong>one joint</strong>.
+        One servo mirrors the other using the idea of reversing the angle.
+      </p>
+
+      <h3>Think again</h3>
+      <ul>
+        <li>Why does a mechanical joint sometimes need two motors?</li>
+        <li>What problem does mirrored motion solve?</li>
+      </ul>
+
+      <h3>Key concept to carry forward</h3>
+      <p>
+        You introduced <strong>gradual motion using a loop</strong> instead of jumping instantly
+        to the target angle.
+      </p>
+
+      <h3>What you should remember from your implementation</h3>
+      <ul>
+        <li>You used serial input to send a target angle</li>
+        <li>You did not jump directly to that angle</li>
+        <li>You moved step by step using a loop</li>
+        <li>You kept track of the current angle</li>
+      </ul>
+
+      <div class="question-box">
+        <strong>Questions to reflect on</strong>
+        <ul>
+          <li>How did the system decide whether to increase or decrease the angle?</li>
+          <li>Why is gradual motion better than direct movement?</li>
+          <li>What role does the delay play?</li>
+        </ul>
+      </div>
+
+      <h3>Previous Session Code (Reference)</h3>
+      <p>
+        Study this carefully. You will reuse its core idea in today’s work.
+      </p>
+
+      <pre class="code-block"><code>#include &lt;Servo.h&gt;
+
+Servo servo1;
+Servo servo2;
+
+int currentAngle = 90;
+
+void setup() {
+  Serial.begin(9600);
+
+  servo1.attach(A1);
+  servo2.attach(A2);
+
+  servo1.write(90);
+  servo2.write(90);
+
+  Serial.println("=== SMOOTH ARM CONTROL (FOR LOOP) ===");
+  Serial.println("Send angle (0–180)");
+}
+
+void loop() {
+  if (Serial.available() &gt; 0) {
+
+    int targetAngle = Serial.readStringUntil('\n').toInt();
+    targetAngle = constrain(targetAngle, 0, 180);
+
+    moveSmooth(targetAngle);
+
+    Serial.print("Moved to: ");
+    Serial.println(targetAngle);
+  }
+}
+
+void moveSmooth(int targetAngle) {
+
+  if (targetAngle &gt; currentAngle) {
+    for (int angle = currentAngle; angle &lt;= targetAngle; angle++) {
+
+      servo2.write(angle);
+      servo1.write(180 - angle);
+
+      delay(15);
+    }
+  }
+
+  else {
+    for (int angle = currentAngle; angle &gt;= targetAngle; angle--) {
+
+      servo2.write(angle);
+      servo1.write(180 - angle);
+
+      delay(15);
+    }
+  }
+
+  currentAngle = targetAngle;
+}</code></pre>
+    </div>
+
+    <div class="section">
+      <h2>1. Step One: Independent Joint Control</h2>
+      <p>
+        Your first goal is to control each joint <strong>independently</strong>, one at a time.
+      </p>
+
+      <h3>What you are building</h3>
+      <ul>
+        <li>The user enters an angle</li>
+        <li>Only one joint moves</li>
+        <li>The system then asks for the next joint</li>
+      </ul>
+
+      <div class="question-box">
+        <strong>Think before coding</strong>
+        <ul>
+          <li>How can the program remember which joint is active?</li>
+          <li>How can you avoid repeating code for every servo?</li>
+        </ul>
+      </div>
+
+      <div class="hint-box">
+        <strong>Hint</strong>
+        <p>
+          Instead of making many separate variables, think about storing information in lists:
+        </p>
+        <ul>
+          <li>A list of joint names</li>
+          <li>A list of joint angles</li>
+        </ul>
+      </div>
+
+      <h3>Starter Code for Base and Lift2</h3>
+      <p>
+        Use this as a starting pattern. It shows one way to organize the logic for two joints first.
+      </p>
+
+      <pre class="code-block"><code>#include &lt;Servo.h&gt;
+
+Servo baseServo;
+Servo lift2Servo;
+
+// Store the angles for each joint
+int angles[2];
+
+// Store the names of each joint
+String jointNames[2] = {
+  "Base",
+  "Lift2"
+};
+
+// Keeps track of which joint we are controlling now
+int currentJoint = 0;
+
+void setup() {
+  Serial.begin(9600);
+
+  baseServo.attach(A0);
+  lift2Servo.attach(A1);
+
+  Serial.println("Independent Joint Control");
+  askNextJoint();
+}
+
+void loop() {
+  if (Serial.available() &gt; 0) {
+    String input = Serial.readStringUntil('\n');
+    input.trim();
+
+    int angle = constrain(input.toInt(), 0, 180);
+
+    // Store the angle in the array
+    angles[currentJoint] = angle;
+
+    // Move only the current joint
+    moveJoint(currentJoint, angle);
+
+    // Go to the next joint
+    currentJoint++;
+
+    // If there are still joints left, ask for the next one
+    if (currentJoint &lt; 2) {
+      askNextJoint();
+    } 
+    else {
+      Serial.println("All joints entered.");
+      currentJoint = 0;
+      Serial.println();
+      askNextJoint();
+    }
+  }
+}
+
+void askNextJoint() {
+  Serial.print("Enter angle for ");
+  Serial.print(jointNames[currentJoint]);
+  Serial.println(":");
+}
+
+void moveJoint(int jointIndex, int angle) {
+  if (jointIndex == 0) {
+    baseServo.write(angle);
+  }
+  else if (jointIndex == 1) {
+    lift2Servo.write(angle);
+  }
+
+  Serial.print(jointNames[jointIndex]);
+  Serial.print(" moved to ");
+  Serial.println(angle);
+}</code></pre>
+
+      <h3>What this teaches them</h3>
+      <p>
+        This part introduces three important ideas:
+      </p>
+
+      <p class="number-title">1. How the program remembers which joint is active</p>
+      <pre class="code-block"><code>int currentJoint = 0;</code></pre>
+      <p>
+        This variable acts like a tracker for the current step in the process.
+        At the beginning, the program starts with joint 0, which is the Base.
+        After that, it moves to joint 1, which is Lift2.
+      </p>
+      <ul>
+        <li>0 means Base</li>
+        <li>1 means Lift2</li>
+      </ul>
+
+      <p class="number-title">2. How names are stored</p>
+      <pre class="code-block"><code>String jointNames[2] = {
+  "Base",
+  "Lift2"
+};</code></pre>
+      <p>
+        This allows the program to print the correct joint name automatically.
+        Instead of writing separate Serial messages for every joint, the program can look up the name in the list.
+      </p>
+
+      <p class="number-title">3. How angles are stored</p>
+      <pre class="code-block"><code>int angles[2];</code></pre>
+      <p>
+        This creates a place to store the entered angle for each joint.
+        Each index in the array matches one joint.
+      </p>
+      <ul>
+        <li>angles[0] stores the Base angle</li>
+        <li>angles[1] stores the Lift2 angle</li>
+      </ul>
+
+      <h3>What students should notice</h3>
+      <p>
+        As they study this code, ask them to identify:
+      </p>
+      <ul>
+        <li>Why does <code>currentJoint</code> increase after each input?</li>
+        <li>Why does the program reset <code>currentJoint</code> back to 0?</li>
+        <li>How does <code>moveJoint()</code> know which servo to move?</li>
+      </ul>
+
+      <h3>Follow-up challenges</h3>
+      <p>
+        After students understand this structure, they should extend it on their own.
+      </p>
+
+      <h4>Challenge 1</h4>
+      <p>Add Lift3 by themselves.</p>
+
+      <h4>Challenge 2</h4>
+      <p>Change Lift2 so it becomes a mirrored dual-servo joint.</p>
+
+      <h4>Challenge 3</h4>
+      <p>Make the system print all saved angles after both joints are entered.</p>
+    </div>
+
+    <div class="section">
+      <h2>2. Observing the Limitation</h2>
+      <p>
+        Once your independent joint control works, something important becomes obvious:
+        the servos move correctly, but the motion is <strong>instant</strong>.
+      </p>
+
+      <div class="question-box">
+        <strong>Reflect</strong>
+        <ul>
+          <li>Does this look like a real robotic arm?</li>
+          <li>What problems can sudden motion cause?</li>
+        </ul>
+      </div>
+
+      <p>
+        You should notice that the arm moves in a way that feels abrupt and mechanically rough.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>3. The Core Question</h2>
+      <p>
+        Now ask yourself the most important question in this lesson:
+      </p>
+
+      <div class="question-box">
+        <strong>How can we move from one angle to another gradually instead of instantly?</strong>
+      </div>
+
+      <h3>Connect to the previous session</h3>
+      <ul>
+        <li>You already solved this once</li>
+        <li>You used a loop</li>
+        <li>You tracked the current angle</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>4. Designing Smooth Motion</h2>
+      <p>
+        The goal is to replace direct angle writing with <strong>progressive movement</strong>.
+      </p>
+
+      <div class="question-box">
+        <strong>Think</strong>
+        <ul>
+          <li>What is the starting angle?</li>
+          <li>What is the target angle?</li>
+          <li>How can the servo travel from one to the other step by step?</li>
+        </ul>
+      </div>
+
+      <div class="hint-box">
+        <strong>Hint</strong>
+        <p>
+          A loop can move through all angle values between the current position and the target position.
+        </p>
+      </div>
+
+      <div class="question-box">
+        <strong>Key challenge</strong>
+        <ul>
+          <li>What if the target is smaller than the current angle?</li>
+          <li>Should the loop always increase?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5. Apply Smooth Motion to One Joint</h2>
+      <p>
+        Now modify your system so one joint moves smoothly instead of instantly.
+      </p>
+
+      <div class="question-box">
+        <strong>Think</strong>
+        <ul>
+          <li>Where should the smooth logic go?</li>
+          <li>Should it stay inside the main loop, or belong in a separate function?</li>
+        </ul>
+      </div>
+
+      <div class="hint-box">
+        <strong>Hint</strong>
+        <p>
+          Focus on the function that moves one joint. That is the best place to begin improving the motion.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>6. Expand to All Joints</h2>
+      <p>
+        Once one joint moves smoothly, apply the same idea to every joint in the arm.
+      </p>
+
+      <div class="question-box">
+        <strong>Think</strong>
+        <ul>
+          <li>Can one movement function be reused for all joints?</li>
+          <li>What information does that function need?</li>
+        </ul>
+      </div>
+
+      <div class="hint-box">
+        <strong>Hint</strong>
+        <ul>
+          <li>Which servo is being controlled?</li>
+          <li>What is the current angle?</li>
+          <li>What is the target angle?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>7. Deeper Problem: Sequential Motion</h2>
+      <p>
+        Even after adding smooth motion, there is still another limitation:
+        the joints may move one after another instead of behaving as a coordinated robotic arm.
+      </p>
+
+      <div class="question-box">
+        <strong>Reflect</strong>
+        <ul>
+          <li>Do real robotic arms move only one joint at a time?</li>
+          <li>What would coordinated motion look like?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>8. Coordinated Motion</h2>
+      <p>
+        The next challenge is to move all joints <strong>together</strong>, smoothly.
+      </p>
+
+      <div class="question-box">
+        <strong>Think differently</strong>
+        <ul>
+          <li>Instead of finishing one joint completely, what if all joints move a little during each step?</li>
+          <li>How would that change the movement of the arm?</li>
+        </ul>
+      </div>
+
+      <div class="hint-box">
+        <strong>Hint</strong>
+        <p>
+          Use a loop that updates every joint during each pass, rather than completing one joint before starting another.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>9. Multi-Joint Control System</h2>
+      <p>
+        To coordinate motion, you now need a way to store all current angles and all target angles.
+      </p>
+
+      <div class="question-box">
+        <strong>Think</strong>
+        <ul>
+          <li>How can all current joint positions be stored together?</li>
+          <li>How can all target positions be stored together?</li>
+          <li>How can one loop update the entire arm?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>10. Defining Positions</h2>
+      <p>
+        In robotics, a single arm position is not one angle. It is a complete set of angles for all joints.
+      </p>
+
+      <div class="question-box">
+        <strong>Important idea</strong>
+        <p>
+          A robotic arm position is a collection of values that describe the whole arm at once.
+        </p>
+      </div>
+
+      <div class="question-box">
+        <strong>Think</strong>
+        <ul>
+          <li>How can a full arm position be stored?</li>
+          <li>How can positions be reused later?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>11. Final Challenge: Pick and Place</h2>
+      <p>
+        Your final goal is to create a system that:
+      </p>
+
+      <ul>
+        <li>Moves to a pickup position</li>
+        <li>Closes the gripper</li>
+        <li>Moves to another position</li>
+        <li>Opens the gripper</li>
+      </ul>
+
+      <div class="question-box">
+        <strong>Important rule</strong>
+        <ul>
+          <li>No sudden jumps</li>
+          <li>All movement should be smooth</li>
+          <li>All joints should work together</li>
+        </ul>
+      </div>
+
+      <div class="question-box">
+        <strong>Think before coding</strong>
+        <ul>
+          <li>How can the arm move to a full position smoothly?</li>
+          <li>How should the gripper be controlled?</li>
+          <li>What sequence of actions is needed to pick up and place a box?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>12. Building Functional Behavior</h2>
+      <p>
+        By the end of this challenge, your program should naturally grow into a set of useful functions.
+      </p>
+
+      <h3>Possible function ideas</h3>
+      <ul>
+        <li>Move to a position smoothly</li>
+        <li>Open the gripper</li>
+        <li>Close the gripper</li>
+        <li>Pick an object</li>
+        <li>Place an object</li>
+      </ul>
+
+      <div class="hint-box">
+        <strong>Hint</strong>
+        <p>
+          Each function should focus on one responsibility. This keeps your program organized and easier to improve.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>13. System Thinking</h2>
+      <p>
+        At this point, you are no longer just moving servos. You are building a robotic system that:
+      </p>
+
+      <ul>
+        <li>Takes input</li>
+        <li>Controls multiple components</li>
+        <li>Coordinates motion</li>
+        <li>Performs a task</li>
+      </ul>
+
+      <div class="question-box">
+        <strong>Final Reflection</strong>
+        <ul>
+          <li>What is the difference between moving one motor and controlling a robot?</li>
+          <li>Why is smooth motion important in robotics?</li>
+          <li>How could sensors improve this system?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Extension Challenge</h2>
+      <p>
+        Try combining everything you learned into one complete system:
+      </p>
+
+      <ul>
+        <li>Step-by-step user input</li>
+        <li>Independent joint control</li>
+        <li>Smooth movement</li>
+        <li>Coordinated motion</li>
+        <li>Automated pick-and-place behavior</li>
+      </ul>
+
+      <div class="question-box">
+        <strong>Final Thought</strong>
+        <p>
+          If your robotic arm can move smoothly, coordinate all joints, grab a box, and place it somewhere else,
+          then you have built the foundation of a real robotic control system.
+        </p>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      End of guided lesson document
+    </p>
+  </div>
+</body>
+</html>
