@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Conveyor Sorting System - Guided Documentation</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 40px;
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+  h1, h2, h3 {
+    color: #38bdf8;
+  }
+  code, pre {
+    background: #1e293b;
+    padding: 10px;
+    display: block;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  .section {
+    margin-bottom: 40px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Conveyor Sorting System – Guided Documentation</h1>
+
+<div class="section">
+<h2>Objective</h2>
+<p>Design and build a system that:</p>
+<ul>
+<li>Moves a conveyor using a stepper motor</li>
+<li>Detects object color using a sensor</li>
+<li>Sorts objects into boxes using servo motors</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>1. System Overview</h2>
+<p>Think about the system in three parts:</p>
+
+<h3>Motion System</h3>
+<p>A stepper motor continuously moves the conveyor</p>
+
+<h3>Sensing System</h3>
+<p>A color sensor reads RGB values</p>
+
+<h3>Action System</h3>
+<p>Servos push objects into the correct bin</p>
+
+<p>Your task is to connect these parts logically.</p>
+</div>
+
+<div class="section">
+<h2>2. Stepper Motor (Provided – Study Carefully)</h2>
+
+<h3>Pin Definitions</h3>
+<pre><code>#define STEP_PIN 3
+#define DIR_PIN 4
+#define ENABLE_PIN 6</code></pre>
+
+<p>
+STEP_PIN sends pulses to move the motor.<br>
+DIR_PIN controls direction.<br>
+ENABLE_PIN turns the driver on or off.
+</p>
+
+<p><strong>Question:</strong> Why might the motor driver require an enable pin?</p>
+
+<h3>Basic Step Function</h3>
+<pre><code>void stepMotor() {
+  digitalWrite(STEP_PIN, HIGH);
+  delayMicroseconds(stepDelay);
+  digitalWrite(STEP_PIN, LOW);
+  delayMicroseconds(stepDelay);
+}</code></pre>
+
+<p>
+One HIGH to LOW pulse equals one step.<br>
+The delay controls how fast steps happen.
+</p>
+
+<p><strong>Key Idea:</strong></p>
+<ul>
+<li>Smaller delay → faster motion</li>
+<li>Larger delay → slower motion</li>
+</ul>
+
+<p><strong>Question:</strong> What happens if the delay is too small?</p>
+
+<h3>Moving a Specific Distance</h3>
+<pre><code>void moveToBox(float revolutions) {
+  long stepsToTake = revolutions * stepsPerRev;
+
+  for (long i = 0; i < stepsToTake; i++) {
+    stepMotor();
+  }
+}</code></pre>
+
+<p>
+The motor moves in steps, not distance units.<br>
+We convert revolutions into steps.
+</p>
+
+<p><strong>Key Idea:</strong></p>
+<ul>
+<li>stepsPerRev = steps in one full rotation</li>
+<li>revolutions = how far to move</li>
+</ul>
+
+<p><strong>Question:</strong> Why use revolutions instead of raw steps?</p>
+
+<h3>Stepper Setup</h3>
+<pre><code>pinMode(STEP_PIN, OUTPUT);
+pinMode(DIR_PIN, OUTPUT);
+pinMode(ENABLE_PIN, OUTPUT);
+
+digitalWrite(ENABLE_PIN, LOW);
+digitalWrite(DIR_PIN, HIGH);</code></pre>
+
+<p>
+Pins must be outputs.<br>
+ENABLE is often active LOW.<br>
+Direction controls movement orientation.
+</p>
+
+<p><strong>Try:</strong> Change direction and observe behavior.</p>
+
+<h3>How the Stepper Is Used</h3>
+<p>
+The motor moves continuously using stepMotor().<br>
+When a color is detected, moveToBox() moves to a sorting position.
+</p>
+
+<p><strong>Question:</strong> What happens while moveToBox() is running?</p>
+</div>
+
+<div class="section">
+<h2>3. Color Detection Logic (You Design This)</h2>
+
+<p>The sensor provides:</p>
+<ul>
+<li>Red (r)</li>
+<li>Green (g)</li>
+<li>Blue (b)</li>
+<li>Light (l)</li>
+</ul>
+
+<p>Your task is to classify colors using comparisons.</p>
+
+<p><strong>Hints:</strong></p>
+<ul>
+<li>Compare which value is largest</li>
+<li>Use differences between values</li>
+<li>Consider light level</li>
+</ul>
+
+<p><strong>Questions:</strong></p>
+<ul>
+<li>Why is largest value alone unreliable?</li>
+<li>How does lighting affect readings?</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>4. Servo Control (You Implement This)</h2>
+
+<p>Each servo should:</p>
+<ul>
+<li>Start in a resting position</li>
+<li>Move to push an object</li>
+<li>Return to resting position</li>
+</ul>
+
+<p><strong>Hints:</strong></p>
+<ul>
+<li>Use angles such as 0 and 180</li>
+<li>Add delay to allow movement</li>
+</ul>
+
+<p><strong>Questions:</strong></p>
+<ul>
+<li>Why is delay necessary?</li>
+<li>What happens if it returns too quickly?</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>5. Main Loop Logic (You Build This)</h2>
+
+<p>Your loop should:</p>
+<ol>
+<li>Move the conveyor slightly</li>
+<li>Check for color detection</li>
+<li>If detected:
+  <ul>
+    <li>Identify color</li>
+    <li>Move to position</li>
+    <li>Activate servo</li>
+  </ul>
+</li>
+</ol>
+
+<p><strong>Key Idea:</strong> The conveyor runs continuously until action is needed.</p>
+
+<p><strong>Question:</strong> Should the conveyor stop during sorting?</p>
+</div>
+
+<div class="section">
+<h2>6. Integration Thinking</h2>
+
+<p>Consider:</p>
+<ul>
+<li>What is the motor doing while pushing?</li>
+<li>How do you ensure correct positioning?</li>
+<li>How do you adjust for lighting changes?</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>7. Testing and Adjustment</h2>
+
+<ul>
+<li>Adjust motor speed (step delay)</li>
+<li>Print sensor values</li>
+<li>Tune movement distances</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>8. Extension Challenge</h2>
+
+<p>Add another color:</p>
+<ul>
+<li>How will you detect it?</li>
+<li>Where will the box be?</li>
+<li>How will the motor reach it?</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Final Thought</h2>
+<p>
+This system combines continuous motion, sensing, and mechanical action.
+Focus on how these parts interact, not just how they work individually.
+</p>
+</div>
+
+</body>
+</html>
