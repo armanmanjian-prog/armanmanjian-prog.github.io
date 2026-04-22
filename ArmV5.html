@@ -124,9 +124,6 @@
 <body>
   <div class="container">
     <h1>Robotic Arm Control – Guided Learning Path</h1>
-    <p class="subtitle">
-      A student-focused lesson designed to guide discovery, reasoning, and system building in robotics programming
-    </p>
 
     <div class="section">
       <h2>0. Review: Dual Servo Joint (From Previous Session)</h2>
@@ -268,7 +265,8 @@ void moveSmooth(int targetAngle) {
       <pre class="code-block"><code>#include &lt;Servo.h&gt;
 
 Servo baseServo;
-Servo lift2Servo;
+Servo lift2Servo1;
+Servo lift2Servo2;
 
 // Store the angles for each joint
 int angles[2];
@@ -286,14 +284,15 @@ void setup() {
   Serial.begin(9600);
 
   baseServo.attach(A0);
-  lift2Servo.attach(A1);
+  lift2Servo1.attach(A1);
+  lift2Servo2.attach(A2);
 
   Serial.println("Independent Joint Control");
   askNextJoint();
 }
 
 void loop() {
-  if (Serial.available() &gt; 0) {
+  if (Serial.available() > 0) {
     String input = Serial.readStringUntil('\n');
     input.trim();
 
@@ -309,7 +308,7 @@ void loop() {
     currentJoint++;
 
     // If there are still joints left, ask for the next one
-    if (currentJoint &lt; 2) {
+    if (currentJoint < 2) {
       askNextJoint();
     } 
     else {
@@ -332,7 +331,8 @@ void moveJoint(int jointIndex, int angle) {
     baseServo.write(angle);
   }
   else if (jointIndex == 1) {
-    lift2Servo.write(angle);
+    lift2Servo1.write(angle);
+    lift2Servo2.write(180 - angle);
   }
 
   Serial.print(jointNames[jointIndex]);
@@ -340,7 +340,6 @@ void moveJoint(int jointIndex, int angle) {
   Serial.println(angle);
 }</code></pre>
 
-      <h3>What this teaches them</h3>
       <p>
         This part introduces three important ideas:
       </p>
@@ -378,9 +377,9 @@ void moveJoint(int jointIndex, int angle) {
         <li>angles[1] stores the Lift2 angle</li>
       </ul>
 
-      <h3>What students should notice</h3>
+      <h3>What you should notice</h3>
       <p>
-        As they study this code, ask them to identify:
+        As you implement this logic, answer to these questions:
       </p>
       <ul>
         <li>Why does <code>currentJoint</code> increase after each input?</li>
@@ -389,18 +388,10 @@ void moveJoint(int jointIndex, int angle) {
       </ul>
 
       <h3>Follow-up challenges</h3>
-      <p>
-        After students understand this structure, they should extend it on their own.
-      </p>
 
-      <h4>Challenge 1</h4>
-      <p>Add Lift3 by themselves.</p>
+      <h4>Challenge </h4>
+      <p>Add Lift3 by yourself</p>
 
-      <h4>Challenge 2</h4>
-      <p>Change Lift2 so it becomes a mirrored dual-servo joint.</p>
-
-      <h4>Challenge 3</h4>
-      <p>Make the system print all saved angles after both joints are entered.</p>
     </div>
 
     <div class="section">
